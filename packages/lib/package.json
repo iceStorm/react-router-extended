@@ -1,12 +1,9 @@
 {
   "name": "@open-react/react-router-extended",
-  "version": "0.0.1",
+  "version": "0.1.2",
   "main": "./index.js",
   "types": "./index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./index.mjs",
-      "require": "./index.js"
-    }
+  "peerDependencies": {
+    "react-router-dom": "^6.11.2"
   }
 }
