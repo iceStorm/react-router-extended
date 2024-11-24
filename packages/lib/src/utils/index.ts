@@ -1,2 +1,3 @@
-export * from './createExtendedRoutes';
-export * from './transformExtendedRoutes';
+export * from './createRoutes';
+export * from './transformRoutes';
+export * from './flattenRoutes';

@@ -1,9 +1,6 @@
 import { RouteObject } from 'react-router-dom';
 
-import {
-  ExtendedRouteObject,
-  ExtendedRoutesMapping,
-} from '../types/ExtendedRouteObject';
+import { ExtendedRoute, ExtendedRoutesMapping } from '../types/ExtendedRoute';
 
 export type TransformRoutesFnProps<T extends object> = {
   /**
@@ -14,7 +11,7 @@ export type TransformRoutesFnProps<T extends object> = {
   /**
    * @private internal use only. Provide a parent route when mapping over a set of child routes. Useful for getting parent information.
    */
-  readonly _parentRoute?: ExtendedRouteObject<T>;
+  readonly _parentRoute?: [string, ExtendedRoute<T>];
 
   /**
    * A callback hook to transform an `ExtendedRouteObject` to a normal `RouteObject`.
@@ -27,33 +24,35 @@ export type TransformedRouteProps<T extends object> = {
   /**
    * An extended route being transformed.
    */
-  route: Omit<ExtendedRouteObject<T>, 'children'> & {
+  route: Omit<ExtendedRoute<T>, 'children'> & {
     children?: RouteObject[];
   };
 
   /**
    * Indicate the parent of an extended route.
    */
-  parentRoute?: ExtendedRouteObject<T>;
+  parentRoute?: ExtendedRoute<T>;
 };
 
-export const transformExtendedRoutes = <T extends object>(
+export const transformRoutes = <T extends object>(
   props: TransformRoutesFnProps<T>
 ): RouteObject[] => {
   const { extendedRoutes, _parentRoute, onTransformRoute } = props;
 
-  const routesArray = Object.values(extendedRoutes);
+  const routesArray = Object.entries(extendedRoutes);
 
   const transformedRoutes: RouteObject[] = [];
 
   routesArray.forEach((currentRoute) => {
-    const { children, index } = currentRoute;
+    const [key, { children }] = currentRoute;
 
     let transformedChildren: RouteObject[] | undefined = undefined;
 
+    const isIndexRoute = key === 'index';
+
     // recursively map over child routes
-    if (!index && children && Object.keys(children).length > 0) {
-      transformedChildren = transformExtendedRoutes({
+    if (!isIndexRoute && children && Object.keys(children).length > 0) {
+      transformedChildren = transformRoutes({
         extendedRoutes: children,
         _parentRoute: currentRoute,
         onTransformRoute,
@@ -62,10 +61,10 @@ export const transformExtendedRoutes = <T extends object>(
 
     const transformedRoute = onTransformRoute({
       route: {
-        ...currentRoute,
-        children: index ? undefined : transformedChildren,
+        ...currentRoute[1],
+        children: isIndexRoute ? undefined : transformedChildren,
       },
-      parentRoute: _parentRoute,
+      parentRoute: _parentRoute?.[1],
     });
 
     if (!transformedRoute.children) {

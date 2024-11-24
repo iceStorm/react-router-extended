@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-import AppRoutes from '../constants/routes';
+import { AppFlattendRoutes } from '../router';
 
 export default function HomePage() {
   return (
@@ -8,7 +8,7 @@ export default function HomePage() {
       <h1>Home page.</h1>
 
       {/* use the AppRoutes to navigate */}
-      <Link to={AppRoutes.root.children.about.path} className="underline">
+      <Link to={AppFlattendRoutes.about.path} className="underline">
         Go to About
       </Link>
     </div>

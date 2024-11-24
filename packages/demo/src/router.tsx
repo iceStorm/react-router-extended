@@ -6,14 +6,17 @@ import {
 
 import { Helmet } from 'react-helmet-async';
 
-import { transformExtendedRoutes } from '@open-react/react-router-extended';
+import {
+  flattenRoutes,
+  transformRoutes,
+} from '@open-react/react-router-extended';
 
 import AppRoutes, { ApplicationCustomRouteProps } from './constants/routes';
 
 /**
  * Transform the extended routes to react-router-dom compatible routes.
  */
-const transformedRoutes = transformExtendedRoutes<ApplicationCustomRouteProps>({
+const transformedRoutes = transformRoutes<ApplicationCustomRouteProps>({
   extendedRoutes: AppRoutes,
 
   onTransformRoute({ route, parentRoute }) {
@@ -39,6 +42,9 @@ const transformedRoutes = transformExtendedRoutes<ApplicationCustomRouteProps>({
 });
 
 console.log('transformed:', transformedRoutes);
+
+export const AppFlattendRoutes = flattenRoutes(AppRoutes);
+console.log('flattended:', AppFlattendRoutes);
 
 const AppRouter = () => (
   <RouterProvider router={createBrowserRouter(transformedRoutes)} />

@@ -1,1 +1,1 @@
-export * from './ExtendedRouteObject';
+export * from './ExtendedRoute';
